@@ -113,6 +113,7 @@ def test_vm_reconfigured(
     )
     assert vnc_vpg_2 is not None
     assert vnc_vmi_3 is not None
+    utils.verify_vmi_bindings(vnc_vmi_3, vnc_vpg_2)
 
     # The VMI for dpg-2 is removed from VNC
     with pytest.raises(vnc_api.NoIdError):

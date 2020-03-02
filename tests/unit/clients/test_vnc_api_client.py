@@ -20,7 +20,7 @@ def vnc_api_client(vnc_lib):
                 "api_server_host": "10.10.10.10",
                 "auth_host": "10.10.10.10",
                 "project_name": "project",
-                "fabric_name": "fabric",
+                "fabric_name": "fabric-name",
             }
         )
 
@@ -416,3 +416,16 @@ def test_read_pi(vnc_api_client, vnc_lib):
 
     assert vnc_api_client.read_pi("pi-uuid") == pi
     assert vnc_api_client.read_pi("pi-uuid") is None
+
+
+def test_create_vmi_bindings(vnc_api_client, vnc_lib, vmi_1, vpg_1):
+    vpg_1.physical_interface_refs = [
+        {"to": ["default-global-system-config", "qfx-1", "xe-0/0/1"]},
+        {"to": ["default-global-system-config", "qfx-2", "xe-0/0/2"]},
+    ]
+
+    vnc_api_client.create_vmi_bindings(vmi_1, vpg_1)
+
+    updated_vmi = vnc_lib.virtual_machine_interface_update.call_args[0][0]
+
+    utils.verify_vmi_bindings(updated_vmi, vpg_1)

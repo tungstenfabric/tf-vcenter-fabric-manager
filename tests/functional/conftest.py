@@ -31,9 +31,11 @@ def lock():
 
 @pytest.fixture
 def vnc_api_client(config):
-    vnc_client = clients.VNCAPIClient(config["vnc_config"])
-    vnc_client.project_name = "test-vcenter-fabric"
-    return vnc_client
+    with mock.patch(
+        "cvfm.clients.vnc.const.VNC_PROJECT_NAME", "test-vcenter-fabric"
+    ):
+        vnc_client = clients.VNCAPIClient(config["vnc_config"])
+        return vnc_client
 
 
 @pytest.fixture

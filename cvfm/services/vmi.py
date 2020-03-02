@@ -62,6 +62,7 @@ class VirtualMachineInterfaceService(Service):
                 "Attached VMI %s to VPG %s", vnc_vmi.name, vnc_vpg.name
             )
             self._vnc_api_client.update_vpg(vnc_vpg)
+        self._vnc_api_client.create_vmi_bindings(vnc_vmi, vnc_vpg)
 
     def find_affected_vmis(self, old_vm_model, new_vm_model):
         if old_vm_model is None:

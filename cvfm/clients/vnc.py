@@ -1,3 +1,5 @@
+import json
+
 from builtins import object
 import logging
 
@@ -250,6 +252,37 @@ class VNCAPIClient(object):
         logger.info("VMI %s detached from VPG %s", vmi.name, vpg.name)
         if not vpg.get_virtual_machine_interface_refs():
             self.delete_vpg(vpg.uuid)
+
+    def create_vmi_bindings(self, vnc_vmi, vnc_vpg):
+        pi_info = [
+            (pi_ref["to"][2], pi_ref["to"][1])
+            for pi_ref in vnc_vpg.get_physical_interface_refs() or ()
+        ]
+
+        profile = {
+            "local_link_information": [
+                {
+                    "port_id": port_id,
+                    "switch_id": port_id,
+                    "fabric": vnc_vpg.fq_name[1],
+                    "switch_info": switch_name,
+                }
+                for port_id, switch_name in pi_info
+            ]
+        }
+
+        kv_pairs = vnc_api.KeyValuePairs(
+            [
+                vnc_api.KeyValuePair(key="vpg", value=vnc_vpg.name),
+                vnc_api.KeyValuePair(key="profile", value=json.dumps(profile)),
+            ]
+        )
+
+        if vnc_vmi.get_virtual_machine_interface_bindings() == kv_pairs:
+            return
+
+        vnc_vmi.set_virtual_machine_interface_bindings(kv_pairs)
+        self.vnc_lib.virtual_machine_interface_update(vnc_vmi)
 
     def get_vn_vlan(self, vnc_vn):
         vmi_refs = vnc_vn.get_virtual_machine_interface_back_refs() or ()

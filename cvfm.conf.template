@@ -35,6 +35,19 @@ vc_datacenter=
 [ZOOKEEPER]
 zookeeper_servers=
 
+[RABBIT]
+rabbit_hosts=
+rabbit_port=
+rabbit_vhost=
+rabbit_user=
+rabbit_password=
+rabbit_use_ssl=
+rabbit_health_check_interval=
+kombu_ssl_version=
+kombu_ssl_certfile=
+kombu_ssl_keyfile=
+kombu_ssl_ca_certs=
+
 [AUTH]
 auth_user=
 auth_password=

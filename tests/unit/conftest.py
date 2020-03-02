@@ -6,16 +6,6 @@ from vnc_api import vnc_api
 from cvfm import database as db, synchronizers
 from cvfm import models
 
-collect_ignore = []
-try:
-    import pysandesh
-    import sandesh_common
-    import cfgm_common
-except ImportError:
-    collect_ignore.append("parser/test_parser.py")
-    collect_ignore.append("context/test_context.py")
-    collect_ignore.append("clients/test_vnc_rabbit_client.py")
-
 
 @pytest.fixture
 def vmware_dpg():

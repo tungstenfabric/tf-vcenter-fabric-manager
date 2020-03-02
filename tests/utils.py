@@ -1,3 +1,5 @@
+import json
+
 from builtins import zip
 import mock
 
@@ -154,3 +156,32 @@ def not_deleted_from_vnc(previous, current):
     previous_create_time = previous.get_id_perms().get_created()
     current_create_time = current.get_id_perms().get_created()
     return current_create_time == previous_create_time
+
+
+def verify_vmi_bindings(vmi, vpg):
+    pi_info = [
+        (pi_ref["to"][2], pi_ref["to"][1])
+        for pi_ref in vpg.get_physical_interface_refs()
+    ]
+    expected_profile = {
+        "local_link_information": [
+            {
+                "port_id": port_id,
+                "switch_id": port_id,
+                "fabric": vpg.fq_name[1],
+                "switch_info": switch_name,
+            }
+            for port_id, switch_name in pi_info
+        ]
+    }
+
+    expected_bindings = vnc_api.KeyValuePairs(
+        [
+            vnc_api.KeyValuePair(key="vpg", value=vpg.name),
+            vnc_api.KeyValuePair(
+                key="profile", value=json.dumps(expected_profile)
+            ),
+        ]
+    )
+
+    assert vmi.get_virtual_machine_interface_bindings() == expected_bindings
