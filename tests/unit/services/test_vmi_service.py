@@ -3,7 +3,6 @@ import pytest
 from vnc_api import vnc_api
 
 from cvfm import models
-from cvfm.exceptions import VNCVMICreationError
 from cvfm.services import VirtualMachineInterfaceService
 
 
@@ -89,12 +88,18 @@ def test_unable_to_create_vmi_in_vnc(vmi_service, vnc_api_client, vmi_model):
 
 
 def test_attach_vmi_to_vpg(vmi_service, vnc_api_client, vmi_model, vnc_fabric):
+    vnc_vmi = mock.Mock()
+    vnc_api_client.read_vmi.return_value = vnc_vmi
     vnc_vpg = vnc_api.VirtualPortGroup(parent_obj=vnc_fabric)
     vnc_api_client.read_vpg.return_value = vnc_vpg
 
     vmi_service.attach_vmi_to_vpg(vmi_model)
 
     assert len(vnc_vpg.virtual_machine_interface_refs) == 1
+
+    vnc_api_client.create_vmi_bindings.assert_called_once_with(
+        vnc_vmi, vnc_vpg
+    )
 
 
 def test_attach_no_vmi(vmi_service, vnc_api_client, vmi_model, vnc_fabric):

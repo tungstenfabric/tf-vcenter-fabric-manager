@@ -73,6 +73,7 @@ def test_vmi_sync_create(
         vn_name="dvs-1_dpg-1",
         vlan=5,
     )
+    utils.verify_vmi_bindings(created_vmi, created_vpg)
 
 
 def test_vmi_exists(

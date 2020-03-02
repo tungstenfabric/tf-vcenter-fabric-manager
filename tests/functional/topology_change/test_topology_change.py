@@ -177,6 +177,9 @@ def test_add_new_node(
         vlan=6,
     )
 
+    utils.verify_vmi_bindings(created_vmi_1, created_vpg_1)
+    utils.verify_vmi_bindings(created_vmi_2, created_vpg_2)
+
     vnc_monitor_greenlet.kill()
 
 
@@ -252,6 +255,7 @@ def test_remove_node(
         vn_name="dvs-1_dpg-1",
         vlan=5,
     )
+    utils.verify_vmi_bindings(created_vmi_1, created_vpg_1)
 
     vnc_monitor_greenlet.kill()
 

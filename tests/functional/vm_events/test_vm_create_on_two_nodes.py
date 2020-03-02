@@ -160,3 +160,6 @@ def test_vm_created_on_two_nodes(
         elif "dpg-3" in vmi.name:
             expected_vlan = 7
         utils.verify_vnc_vmi(vnc_vmi=vmi, vlan=expected_vlan)
+
+        vpg_name = "_".join(vmi.name.split("_")[:-1])
+        utils.verify_vmi_bindings(vmi, vpgs[vpg_name])
