@@ -178,10 +178,13 @@ def verify_vmi_bindings(vmi, vpg):
     expected_bindings = vnc_api.KeyValuePairs(
         [
             vnc_api.KeyValuePair(key="vpg", value=vpg.name),
+            vnc_api.KeyValuePair(key="vnic_type", value="baremetal"),
             vnc_api.KeyValuePair(
                 key="profile", value=json.dumps(expected_profile)
             ),
         ]
     )
 
-    assert vmi.get_virtual_machine_interface_bindings() == expected_bindings
+    assert set(expected_bindings.get_key_value_pair()).issubset(
+        set(vmi.get_virtual_machine_interface_bindings().get_key_value_pair())
+    )

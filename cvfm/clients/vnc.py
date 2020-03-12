@@ -274,11 +274,15 @@ class VNCAPIClient(object):
         kv_pairs = vnc_api.KeyValuePairs(
             [
                 vnc_api.KeyValuePair(key="vpg", value=vnc_vpg.name),
+                vnc_api.KeyValuePair(key="vnic_type", value="baremetal"),
                 vnc_api.KeyValuePair(key="profile", value=json.dumps(profile)),
             ]
         )
 
-        if vnc_vmi.get_virtual_machine_interface_bindings() == kv_pairs:
+        existing_bindings = vnc_vmi.get_virtual_machine_interface_bindings()
+        if existing_bindings is not None and set(
+            existing_bindings.get_key_value_pair()
+        ) == set(kv_pairs.get_key_value_pair()):
             return
 
         vnc_vmi.set_virtual_machine_interface_bindings(kv_pairs)
@@ -328,6 +332,8 @@ class VNCAPIClient(object):
         )
         new_vnc_vmi.set_virtual_machine_interface_properties(vmi_properties)
         new_vnc_vmi.set_id_perms(const.ID_PERMS)
+        vmi_bindings = old_vnc_vmi.get_virtual_machine_interface_bindings()
+        new_vnc_vmi.set_virtual_machine_interface_bindings(vmi_bindings)
         return new_vnc_vmi
 
     def _delete_old_vmi(self, vnc_vmi, vnc_vpg):
