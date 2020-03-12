@@ -51,6 +51,8 @@ def test_dpg_reconfiguration(
     vmis = vnc_test_client.read_all_vmis()
     assert len(vmis) == 2
 
+    vpgs = vnc_test_client.read_all_vpgs()
+
     created_vmi = vmis["esxi-1_dvs-1_dpg-1"]
     utils.verify_vnc_vmi(
         vnc_vmi=created_vmi,
@@ -59,6 +61,8 @@ def test_dpg_reconfiguration(
         vn_name="dvs-1_dpg-1",
         vlan=5,
     )
+    created_vpg = vpgs["esxi-1_dvs-1"]
+    utils.verify_vmi_bindings(created_vmi, created_vpg)
 
     created_vmi = vmis["esxi-2_dvs-1_dpg-1"]
     utils.verify_vnc_vmi(
@@ -78,6 +82,8 @@ def test_dpg_reconfiguration(
     vmis = vnc_test_client.read_all_vmis()
     assert len(vmis) == 2
 
+    vpgs = vnc_test_client.read_all_vpgs()
+
     created_vmi = vmis["esxi-1_dvs-1_dpg-1"]
     utils.verify_vnc_vmi(
         vnc_vmi=created_vmi,
@@ -86,6 +92,8 @@ def test_dpg_reconfiguration(
         vn_name="dvs-1_dpg-1",
         vlan=15,
     )
+    created_vpg = vpgs["esxi-1_dvs-1"]
+    utils.verify_vmi_bindings(created_vmi, created_vpg)
 
     created_vmi = vmis["esxi-2_dvs-1_dpg-1"]
     utils.verify_vnc_vmi(
@@ -95,3 +103,5 @@ def test_dpg_reconfiguration(
         vn_name="dvs-1_dpg-1",
         vlan=15,
     )
+    created_vpg = vpgs["esxi-2_dvs-1"]
+    utils.verify_vmi_bindings(created_vmi, created_vpg)
