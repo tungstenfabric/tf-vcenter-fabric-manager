@@ -2,6 +2,7 @@ from builtins import object
 import logging
 import sys
 
+
 import gevent
 from cfgm_common import zkclient
 from cfgm_common.uve.nodeinfo.ttypes import NodeStatus, NodeStatusUVE
