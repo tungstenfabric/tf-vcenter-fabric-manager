@@ -12,7 +12,7 @@ env = DefaultEnvironment()
 setup_sources = [
     'setup.py',
     'requirements.txt',
-    'requirements_dev.txt',
+    'test-requirements.txt',
     'tox.ini',
     '.coveragerc',
     'pyproject.toml'
