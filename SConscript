@@ -12,10 +12,12 @@ env = DefaultEnvironment()
 setup_sources = [
     'setup.py',
     'requirements.txt',
-    'requirements_dev.txt',
+    'test-requirements.txt',
     'tox.ini',
     '.coveragerc',
-    'pyproject.toml'
+    'pyproject.toml',
+    '.stestr.conf',
+    'MANIFEST.in'
 ]
 
 setup_sources_rules = []
@@ -84,3 +86,9 @@ install_cmd = env.Command(
 
 env.Depends(install_cmd, cvfm)
 env.Alias("cvfm-install", install_cmd)
+
+
+
+
+
+
