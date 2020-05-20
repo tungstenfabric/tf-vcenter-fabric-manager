@@ -1,3 +1,2 @@
-bitarray
 mock==2.0.0
 pytest==4.6.9
