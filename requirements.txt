@@ -4,7 +4,6 @@ future
 six
 kombu
 bottle
-kazoo
 contrail-config-common
 sandesh==0.1dev
 sandesh-common
