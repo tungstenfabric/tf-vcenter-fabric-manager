@@ -6,7 +6,7 @@ def requirements(filename):
     with open(filename) as f:
         lines = f.read().splitlines()
     c = re.compile(r"\s*#.*")
-    return filter(bool, map(lambda y: c.sub("", y).strip(), lines))
+    return lsit(filter(bool, map(lambda y: c.sub("", y).strip(), lines)))
 
 
 setup(
