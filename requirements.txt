@@ -1,5 +1,5 @@
 gevent<1.3.0
-pyvmomi==6.5.0.2017.5.post1
+pyvmomi==6.7.3
 future
 six
 kombu
