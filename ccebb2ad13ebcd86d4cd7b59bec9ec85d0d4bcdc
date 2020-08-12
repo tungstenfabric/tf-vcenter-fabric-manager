@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "448490cc_fa8a2cf7",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 126
+      },
+      "writtenOn": "2020-08-12T19:05:10Z",
+      "side": 1,
+      "message": "It may so happen that the api server may be busy and the timeout 180 may not be sufficient to get the list of all VMIs.\nRather I suppose we should be directly reading from DB like other config services (schema transformer, svc monitor, device manager etal). Can you please sync up with the config team on the same.",
+      "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
