@@ -16,6 +16,23 @@
       "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "490131b3_96904c6a",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 64
+      },
+      "writtenOn": "2020-08-12T21:11:08Z",
+      "side": 1,
+      "message": "There are two timeouts, one for connection (CONNECTION_TIMEOUT) and timeout (for CRUD)\nI suppose assuming 180s to READ all data during REINIT may not be a good idea. Have you tried any scale setups?",
+      "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
