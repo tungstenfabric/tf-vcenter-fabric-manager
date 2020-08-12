@@ -70,7 +70,7 @@ class DistributedPortGroupSynchronizer(BaseSynchronizer):
         logger.info("Populated local database with DPG models")
         dpgs_in_vcenter = self._dpg_service.get_all_dpg_models()
         fabric_vns = self._dpg_service.get_all_fabric_vns()
-        fabric_vn_uuids = [vn.uuid for vn in fabric_vns]
+        fabric_vn_uuids = [vn["uuid"] for vn in fabric_vns]
 
         vns_to_create = [
             dpg_model
@@ -102,7 +102,7 @@ class DistributedPortGroupSynchronizer(BaseSynchronizer):
         fabric_vns_to_delete = [
             fabric_vn
             for fabric_vn in fabric_vns
-            if fabric_vn.uuid not in dpgs_in_vcenter_uuids
+            if fabric_vn["uuid"] not in dpgs_in_vcenter_uuids
         ]
 
         if len(fabric_vns_to_delete) == 0:
@@ -112,13 +112,13 @@ class DistributedPortGroupSynchronizer(BaseSynchronizer):
         logger.info("Deleting stale VNs from VNC...")
         for fabric_vn in fabric_vns_to_delete:
             try:
-                self._dpg_service.delete_fabric_vn(fabric_vn.uuid)
+                self._dpg_service.delete_fabric_vn(fabric_vn["uuid"])
             except ConnectionLostError:
                 raise
             except Exception:
                 logger.exception(
                     "Unexpected error during deleting VN with uuid: %s",
-                    fabric_vn.uuid,
+                    fabric_vn["uuid"],
                 )
         logger.info("Deleted stale VNs from VNC...")
 
@@ -150,7 +150,7 @@ class VirtualPortGroupSynchronizer(BaseSynchronizer):
             vpg_models.extend(self._vpg_service.create_vpg_models(vm_model))
         vpg_uuids = set(vpg_model.uuid for vpg_model in vpg_models)
         vpg_uuids_in_vnc = set(
-            vpg.uuid for vpg in self._vpg_service.read_all_vpgs()
+            vpg["uuid"] for vpg in self._vpg_service.read_all_vpgs()
         )
         vpgs_to_delete = vpg_uuids_in_vnc - vpg_uuids
         if len(vpgs_to_delete) == 0:
@@ -201,7 +201,7 @@ class VirtualMachineInterfaceSynchronizer(BaseSynchronizer):
             )
         vmi_uuids = set(vmi_model.uuid for vmi_model in vmi_models)
         vmi_uuids_in_vnc = set(
-            vmi.uuid for vmi in self._vmi_service.read_all_vmis()
+            vmi["uuid"] for vmi in self._vmi_service.read_all_vmis()
         )
         vmis_to_delete = vmi_uuids_in_vnc - vmi_uuids
 

@@ -26,4 +26,4 @@ def test_sync_delete(dpg_synchronizer, dpg_service, fabric_vn):
 
     dpg_synchronizer.sync_delete()
 
-    dpg_service.delete_fabric_vn.assert_called_once_with(fabric_vn.uuid)
+    dpg_service.delete_fabric_vn.assert_called_once_with(fabric_vn["uuid"])
