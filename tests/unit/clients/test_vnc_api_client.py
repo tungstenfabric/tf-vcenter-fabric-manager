@@ -75,16 +75,18 @@ def vn(project, vmi_1):
 
 @pytest.fixture
 def vcenter_object():
-    obj = mock.Mock(uuid="vcenter-obj-uuid")
-    obj.get_id_perms.return_value = constants.ID_PERMS
-    return obj
+    return {
+        "uuid": "vcenter-obj-uuid",
+        "id_perms": {"creator": constants.ID_PERMS.get_creator()},
+    }
 
 
 @pytest.fixture
 def non_vcenter_object(project):
-    obj = mock.Mock(uuid="non-vcenter-obj-uuid")
-    obj.get_id_perms.return_value.get_creator.return_value = "other-creator"
-    return obj
+    return {
+        "uuid": "vcenter-obj-uuid",
+        "id_perms": {"creator": "other-creator"},
+    }
 
 
 def test_detach_last_vmi_from_vpg(vnc_api_client, vnc_lib, vmi_1, vpg_1):
@@ -128,15 +130,8 @@ def test_read_all_vmis(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_machine_interfaces_list.return_value = {
-        "virtual-machine-interfaces": [
-            {"uuid": vcenter_object.uuid},
-            {"uuid": non_vcenter_object.uuid},
-        ]
+        "virtual-machine-interfaces": [vcenter_object, non_vcenter_object]
     }
-    vnc_lib.virtual_machine_interface_read.side_effect = [
-        vcenter_object,
-        non_vcenter_object,
-    ]
 
     vmis = vnc_api_client.read_all_vmis()
 
@@ -147,32 +142,20 @@ def test_read_all_vpgs(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_port_groups_list.return_value = {
-        "virtual-port-groups": [
-            {"uuid": vcenter_object.uuid},
-            {"uuid": non_vcenter_object.uuid},
-        ]
+        "virtual-port-groups": [vcenter_object, non_vcenter_object,]
     }
-    vnc_lib.virtual_port_group_read.side_effect = [
-        vcenter_object,
-        non_vcenter_object,
-    ]
 
     vpgs = vnc_api_client.read_all_vpgs()
 
     assert vpgs == [vcenter_object]
 
 
-def test_read_all(vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object):
+def test_read_all_vns(
+    vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
+):
     vnc_lib.virtual_networks_list.return_value = {
-        "virtual-networks": [
-            {"uuid": vcenter_object.uuid},
-            {"uuid": non_vcenter_object.uuid},
-        ]
+        "virtual-networks": [vcenter_object, non_vcenter_object,]
     }
-    vnc_lib.virtual_network_read.side_effect = [
-        vcenter_object,
-        non_vcenter_object,
-    ]
 
     vns = vnc_api_client.read_all_vns()
 
@@ -180,16 +163,13 @@ def test_read_all(vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object):
 
 
 def test_has_proper_creator():
-    proper_creator = mock.Mock()
-    proper_creator.get_id_perms.return_value = constants.ID_PERMS
-    other_creator = mock.Mock()
-    other_creator.get_id_perms.return_value.get_creator.return_value = (
-        "other-creator"
-    )
-    no_creator = mock.Mock()
-    no_creator.get_id_perms.return_value = None
-    no_id_perms = mock.Mock()
-    no_id_perms.get_id_perms.return_value = None
+    proper_creator = {
+        "id_perms": {"creator": constants.ID_PERMS.get_creator()}
+    }
+
+    other_creator = {"id_perms": {"creator": "other-creator"}}
+    no_creator = {"id_perms": {}}
+    no_id_perms = {}
 
     assert clients.has_proper_creator(proper_creator) is True
     assert clients.has_proper_creator(other_creator) is False

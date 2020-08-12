@@ -53,13 +53,22 @@ def test_sync_delete(
     vpg_service.create_vpg_models.return_value = models.VirtualPortGroupModel.from_vm_model(
         vm_model
     )
-    vpg_1 = models.VirtualPortGroupModel.from_vm_model(vm_model)[0].to_vnc_vpg(
-        vnc_fabric
+    vpg_1_uuid = (
+        models.VirtualPortGroupModel.from_vm_model(vm_model)[0]
+        .to_vnc_vpg(vnc_fabric)
+        .uuid
     )
-    vpg_2 = mock.Mock(uuid="vpg-2-uuid")
-    vpg_2.get_id_perms.return_value = constants.ID_PERMS
+
+    vpg_1 = {
+        "uuid": vpg_1_uuid,
+        "id_perms": {"creator": constants.ID_PERMS.get_creator()},
+    }
+    vpg_2 = {
+        "uuid": "vpg-2-uuid",
+        "id_perms": {"creator": constants.ID_PERMS.get_creator()},
+    }
     vpg_service.read_all_vpgs.return_value = [vpg_1, vpg_2]
 
     vpg_synchronizer.sync_delete()
 
-    vpg_service.delete_vpg.assert_called_once_with(vpg_2.uuid)
+    vpg_service.delete_vpg.assert_called_once_with(vpg_2["uuid"])

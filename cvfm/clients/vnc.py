@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 def has_proper_creator(vnc_object):
-    id_perms = vnc_object.get_id_perms()
+    id_perms = vnc_object.get("id_perms")
     if id_perms is not None:
-        return id_perms.get_creator() == const.ID_PERMS.get_creator()
+        return id_perms.get("creator") == const.ID_PERMS.get_creator()
     return False
 
 
@@ -38,6 +38,7 @@ class VNCAPIClient(object):
             password=auth_cfg.get("auth_password"),
             tenant_name=auth_cfg.get("auth_tenant"),
             auth_token_url=auth_cfg.get("auth_token_url"),
+            timeout=180,
         )
         self.project_name = vnc_cfg.get("project_name", const.VNC_PROJECT_NAME)
         self.check_project()
@@ -81,28 +82,21 @@ class VNCAPIClient(object):
             logger.info("VMI %s already exists in VNC", vnc_vmi.name)
 
     def read_all_vns(self):
-        vn_ref_list = self.vnc_lib.virtual_networks_list(
-            parent_id=self.get_project().get_uuid()
+        vns_in_vnc = self.vnc_lib.virtual_networks_list(
+            parent_id=self.get_project().get_uuid(), fields=["id_perms"]
         )["virtual-networks"]
-        vns_in_vnc = [self.read_vn(vn_ref["uuid"]) for vn_ref in vn_ref_list]
         return [vn for vn in vns_in_vnc if has_proper_creator(vn)]
 
     def read_all_vpgs(self):
-        vpg_ref_list = self.vnc_lib.virtual_port_groups_list()[
-            "virtual-port-groups"
-        ]
-        vpgs_in_vnc = [
-            self.read_vpg(vpg_ref["uuid"]) for vpg_ref in vpg_ref_list
-        ]
+        vpgs_in_vnc = self.vnc_lib.virtual_port_groups_list(
+            fields=["id_perms"]
+        )["virtual-port-groups"]
         return [vpg for vpg in vpgs_in_vnc if has_proper_creator(vpg)]
 
     def read_all_vmis(self):
-        vmi_ref_list = self.vnc_lib.virtual_machine_interfaces_list(
-            parent_id=self.get_project().get_uuid()
+        vmis_in_vnc = self.vnc_lib.virtual_machine_interfaces_list(
+            parent_id=self.get_project().get_uuid(), fields=["id_perms"]
         )["virtual-machine-interfaces"]
-        vmis_in_vnc = [
-            self.read_vmi(vmi_ref["uuid"]) for vmi_ref in vmi_ref_list
-        ]
         return [vmi for vmi in vmis_in_vnc if has_proper_creator(vmi)]
 
     def read_vn(self, vn_uuid):
