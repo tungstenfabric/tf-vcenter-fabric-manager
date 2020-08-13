@@ -105,6 +105,24 @@
       "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6620372_8814a51a",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 64
+      },
+      "writtenOn": "2020-08-13T21:50:34Z",
+      "side": 1,
+      "message": "@Adrian\nmy only concern is that you seem to assume 180s or default timeout (120s) is suffice when you perform read_all_vns, read_all_vmis, read_all_vpgs. So i was asking if this was tested again scale setups.\nI understand these reads were not actually a part of this patch. you can take your own decision here :)",
+      "parentUuid": "0aa0be27_4b88f340",
+      "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
