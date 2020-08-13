@@ -51,6 +51,42 @@
       "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f865558f_fb62044a",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 582
+      },
+      "writtenOn": "2020-08-13T13:29:55Z",
+      "side": 1,
+      "message": "If there is a way to operate on DB directly and it\u0027s consistent with what API Server does, it can be done. But it\u0027s a huge change and I don\u0027t think it should be done as a part of this review.",
+      "parentUuid": "d0b0caa8_534fdf77",
+      "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0aa0be27_4b88f340",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 582
+      },
+      "writtenOn": "2020-08-13T13:29:55Z",
+      "side": 1,
+      "message": "Is it ok if I just remove this timeout parameter and leave this part as it is now? I put it in here, because it was a part of the patch included in the ticket - I assumed it\u0027s a safe value.",
+      "parentUuid": "490131b3_96904c6a",
+      "revId": "ccebb2ad13ebcd86d4cd7b59bec9ec85d0d4bcdc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
