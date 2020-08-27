@@ -142,7 +142,10 @@ def test_read_all_vpgs(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_port_groups_list.return_value = {
-        "virtual-port-groups": [vcenter_object, non_vcenter_object,]
+        "virtual-port-groups": [
+            vcenter_object,
+            non_vcenter_object,
+        ]
     }
 
     vpgs = vnc_api_client.read_all_vpgs()
@@ -154,7 +157,10 @@ def test_read_all_vns(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_networks_list.return_value = {
-        "virtual-networks": [vcenter_object, non_vcenter_object,]
+        "virtual-networks": [
+            vcenter_object,
+            non_vcenter_object,
+        ]
     }
 
     vns = vnc_api_client.read_all_vns()

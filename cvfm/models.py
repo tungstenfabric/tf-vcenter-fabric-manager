@@ -65,14 +65,11 @@ class VirtualMachineModel(Model):
         )
 
     def __repr__(self):
-        return (
-            "VirtualMachineModel(name={name}, vcenter_uuid={vcenter_uuid}, host_name={host_name}, "
-            "dpg_models={dpg_models})".format(
-                name=self.name,
-                vcenter_uuid=self.vcenter_uuid,
-                host_name=self.host_name,
-                dpg_models=self.dpg_models,
-            )
+        return "VirtualMachineModel(name={name}, vcenter_uuid={vcenter_uuid}, host_name={host_name}, dpg_models={dpg_models})".format(
+            name=self.name,
+            vcenter_uuid=self.vcenter_uuid,
+            host_name=self.host_name,
+            dpg_models=self.dpg_models,
         )
 
 
@@ -107,16 +104,12 @@ class DistributedPortGroupModel(Model):
         )
 
     def __repr__(self):
-        return (
-            "DistributePortGroupModel(uuid={uuid}, "
-            "key={key}, name={name}, vlan_id={vlan_id}, "
-            "dvs_name={dvs_name})".format(
-                uuid=self.uuid,
-                key=self.key,
-                name=self.name,
-                vlan_id=self.vlan_id,
-                dvs_name=self.dvs_name,
-            )
+        return "DistributePortGroupModel(uuid={uuid}, key={key}, name={name}, vlan_id={vlan_id}, dvs_name={dvs_name})".format(
+            uuid=self.uuid,
+            key=self.key,
+            name=self.name,
+            vlan_id=self.vlan_id,
+            dvs_name=self.dvs_name,
         )
 
 
@@ -150,14 +143,11 @@ class VirtualPortGroupModel(Model):
         return models
 
     def __repr__(self):
-        return (
-            "VirtualPortGroupModel(uuid={uuid}, name={name}, host_name={host_name}, "
-            "dvs_name={dvs_name})".format(
-                uuid=self.uuid,
-                name=self.name,
-                host_name=self.host_name,
-                dvs_name=self.dvs_name,
-            )
+        return "VirtualPortGroupModel(uuid={uuid}, name={name}, host_name={host_name}, dvs_name={dvs_name})".format(
+            uuid=self.uuid,
+            name=self.name,
+            host_name=self.host_name,
+            dvs_name=self.dvs_name,
         )
 
 
@@ -213,14 +203,11 @@ class VirtualMachineInterfaceModel(Model):
         )
 
     def __repr__(self):
-        return (
-            "VirtualMachineInterfaceModel(uuid={uuid}, name={name}, host_name={host_name}, "
-            "dpg_model={dpg_model})".format(
-                uuid=self.uuid,
-                name=self.name,
-                host_name=self.host_name,
-                dpg_model=self.dpg_model,
-            )
+        return "VirtualMachineInterfaceModel(uuid={uuid}, name={name}, host_name={host_name}, dpg_model={dpg_model})".format(
+            uuid=self.uuid,
+            name=self.name,
+            host_name=self.host_name,
+            dpg_model=self.dpg_model,
         )
 
 
@@ -232,12 +219,9 @@ class PhysicalInterfaceModel(Model):
         self.dvs_name = dvs_name
 
     def __repr__(self):
-        return (
-            "PhysicalInterfaceModel(uuid={uuid}, fabric_uuid={fabric_uuid}, host_name={host_name}, "
-            "dvs_name={dvs_name})".format(
-                uuid=self.uuid,
-                fabric_uuid=self.fabric_uuid,
-                host_name=self.host_name,
-                dvs_name=self.dvs_name,
-            )
+        return "PhysicalInterfaceModel(uuid={uuid}, fabric_uuid={fabric_uuid}, host_name={host_name}, dvs_name={dvs_name})".format(
+            uuid=self.uuid,
+            fabric_uuid=self.fabric_uuid,
+            host_name=self.host_name,
+            dvs_name=self.dvs_name,
         )

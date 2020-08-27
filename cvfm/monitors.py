@@ -24,8 +24,10 @@ class VMwareMonitor(object):
             gevent.sleep()
 
     def _init(self):
-        event_history_collector = self._vcenter_api_client.create_event_history_collector(
-            const.EVENTS_TO_OBSERVE
+        event_history_collector = (
+            self._vcenter_api_client.create_event_history_collector(
+                const.EVENTS_TO_OBSERVE
+            )
         )
         self._vcenter_api_client.add_filter(
             event_history_collector, ["latestPage"]
