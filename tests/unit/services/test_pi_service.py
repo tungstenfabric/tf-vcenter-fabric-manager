@@ -29,14 +29,23 @@ def node():
 def port(node):
     esxi_port_info = vnc_api.ESXIProperties(dvs_name="dvs-1")
     vnc_port = vnc_api.Port("port-1", node, esxi_port_info=esxi_port_info)
-    vnc_port.physical_interface_back_refs = [{"uuid": "pi-1-uuid"}]
-    return vnc_port
+    json_port = vnc_port.serialize_to_json(["esxi_port_info", "fq_name"])
+    json_port.update({"physical_interface_back_refs": [{"uuid": "pi-1-uuid"}]})
+    json_port["esxi_port_info"] = json_port["esxi_port_info"].exportDict(
+        name_=None
+    )
+    return json_port
 
 
 @pytest.fixture
 def invalid_port(node):
     esxi_port_info = vnc_api.ESXIProperties()
-    return vnc_api.Port("port-2", node, esxi_port_info=esxi_port_info)
+    vnc_port = vnc_api.Port("port-2", node, esxi_port_info=esxi_port_info)
+    json_port = vnc_port.serialize_to_json(["esxi_port_info", "fq_name"])
+    json_port["esxi_port_info"] = json_port["esxi_port_info"].exportDict(
+        name_=None
+    )
+    return json_port
 
 
 @pytest.fixture
@@ -120,10 +129,16 @@ def test_populate_db(
     physical_router,
 ):
     vcenter_api_client.get_all_hosts.return_value = [host]
-    vnc_api_client.get_nodes_by_host_names.return_value = [node]
+    vnc_api_client.get_nodes_by_host_names.return_value = [
+        node.serialize_to_json(["fq_name", "ports"])
+    ]
     vnc_api_client.get_node_ports.return_value = [port, invalid_port]
-    vnc_api_client.get_pis_by_port.return_value = [physical_interface]
-    vnc_api_client.read_all_physical_routers.return_value = [physical_router]
+    vnc_api_client.get_pis_by_port.return_value = [
+        physical_interface.serialize_to_json(["parent_uuid"])
+    ]
+    vnc_api_client.read_all_physical_routers.return_value = [
+        physical_router.serialize_to_json(["fabric_refs"])
+    ]
 
     pi_service.populate_db_with_pi_models()
 
@@ -139,11 +154,11 @@ def test_populate_db(
 def test_validate_vnc_port(port):
     services.validate_vnc_port(port)
 
-    port.esxi_port_info.dvs_name = None
+    port["esxi_port_info"]["dvs_name"] = None
     with pytest.raises(VNCPortValidationError):
         services.validate_vnc_port(port)
 
-    port.esxi_port_info = None
+    port["esxi_port_info"] = None
     with pytest.raises(VNCPortValidationError):
         services.validate_vnc_port(port)
 
@@ -151,7 +166,7 @@ def test_validate_vnc_port(port):
 def test_validate_port_pi_back_refs(port):
     services.validate_vnc_port(port)
 
-    port.physical_interface_back_refs = None
+    port["physical_interface_back_refs"] = None
     with pytest.raises(VNCPortValidationError):
         services.validate_vnc_port(port)
 
@@ -166,11 +181,14 @@ def test_populate_pr_to_fabric(
     physical_router_3,
     physical_router_4,
 ):
-    vnc_api_client.read_all_physical_routers.return_value = [
+    physical_routers = [
         physical_router_1,
         physical_router_2,
         physical_router_3,
         physical_router_4,
+    ]
+    vnc_api_client.read_all_physical_routers.return_value = [
+        pr.serialize_to_json(["fabric_refs"]) for pr in physical_routers
     ]
 
     pr_to_fabric = pi_service._populate_pr_to_fabric()

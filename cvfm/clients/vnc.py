@@ -146,54 +146,35 @@ class VNCAPIClient(object):
 
     def delete_vn(self, vn_uuid):
         vnc_vn = self.read_vn(vn_uuid)
-        for vnc_vmi in self.get_vmis_by_vn(vnc_vn):
-            self.delete_vmi(vnc_vmi.uuid)
+
+        vmi_refs = vnc_vn.get_virtual_machine_interface_back_refs() or ()
+        vmi_uuids = [vmi_ref["uuid"] for vmi_ref in vmi_refs]
+        for vmi_uuid in vmi_uuids:
+            self.delete_vmi(vmi_uuid)
+
         try:
             self.vnc_lib.virtual_network_delete(id=vn_uuid)
             logger.info("VN %s deleted from VNC", vn_uuid)
         except vnc_api.NoIdError:
             logger.info("VN %s not found in VNC, unable to delete", vn_uuid)
 
-    def _read_physical_router(self, pr_uuid):
-        try:
-            return self.vnc_lib.physical_router_read(id=pr_uuid)
-        except vnc_api.NoIdError:
-            logger.info("Physical router %s not found in VNC", pr_uuid)
-
-    def read_all_physical_routers(self):
-        pr_refs = self.vnc_lib.physical_routers_list()["physical-routers"]
-        prs = [
-            self._read_physical_router(pr_ref["uuid"]) for pr_ref in pr_refs
-        ]
-        return [pr for pr in prs if pr is not None]
-
-    def _read_node(self, node_uuid):
-        try:
-            return self.vnc_lib.node_read(id=node_uuid)
-        except vnc_api.NoIdError:
-            logger.info("Node %s not found in VNC", node_uuid)
-
-    def _read_all_nodes(self):
-        node_refs = self.vnc_lib.nodes_list()["nodes"]
-        nodes = [self._read_node(node_ref["uuid"]) for node_ref in node_refs]
-        return [node for node in nodes if node is not None]
-
-    def get_nodes_by_host_names(self, esxi_names):
-        vnc_nodes = self._read_all_nodes()
-        return [
-            vnc_node for vnc_node in vnc_nodes if vnc_node.name in esxi_names
+    def read_all_physical_routers(self, fields=None):
+        return self.vnc_lib.physical_routers_list(fields=fields)[
+            "physical-routers"
         ]
 
-    def get_node_ports(self, node):
-        port_refs = node.get_ports()
-        return [self._read_port(port_ref["uuid"]) for port_ref in port_refs]
+    def get_nodes_by_host_names(self, esxi_names, fields=None):
+        filters = {"name": esxi_names}
+        return self.vnc_lib.nodes_list(fields=fields, filters=filters)["nodes"]
 
-    def read_all_ports(self):
-        port_refs = self.vnc_lib.ports_list()["ports"]
-        return [self._read_port(port_ref["uuid"]) for port_ref in port_refs]
+    def get_node_ports(self, node, fields=None):
+        port_uuids = [port_ref["uuid"] for port_ref in node.get("ports")]
+        return self.vnc_lib.ports_list(fields=fields, obj_uuids=port_uuids)[
+            "ports"
+        ]
 
-    def _read_port(self, port_uuid):
-        return self.vnc_lib.port_read(id=port_uuid)
+    def read_all_ports(self, fields=None):
+        return self.vnc_lib.ports_list(fields=fields)["ports"]
 
     def read_pi(self, pi_uuid):
         try:
@@ -201,9 +182,14 @@ class VNCAPIClient(object):
         except vnc_api.NoIdError:
             logger.info("Physical Interface %s not found in VNC", pi_uuid)
 
-    def get_pis_by_port(self, port):
-        pi_refs = port.get_physical_interface_back_refs()
-        return [self.read_pi(pi_ref["uuid"]) for pi_ref in pi_refs]
+    def get_pis_by_port(self, port, fields=None):
+        pi_uuids = [
+            pi_ref["uuid"]
+            for pi_ref in port.get("physical_interface_back_refs", ())
+        ]
+        return self.vnc_lib.physical_interfaces_list(
+            fields=fields, obj_uuids=pi_uuids
+        )["physical-interfaces"]
 
     def attach_pis_to_vpg(self, vpg, physical_interfaces):
         if not physical_interfaces:
@@ -293,8 +279,14 @@ class VNCAPIClient(object):
         return vmi_properties.get_sub_interface_vlan_tag()
 
     def get_vmis_by_vn(self, vnc_vn):
-        vmi_refs = vnc_vn.get_virtual_machine_interface_back_refs() or ()
-        return [self.read_vmi(vmi_ref["uuid"]) for vmi_ref in vmi_refs]
+        vmi_uuids = [
+            vmi_ref["uuid"]
+            for vmi_ref in vnc_vn.get_virtual_machine_interface_back_refs()
+            or ()
+        ]
+        return self.vnc_lib.virtual_machine_interfaces_list(
+            detail=True, obj_uuids=vmi_uuids
+        )
 
     def recreate_vmi_with_new_vlan(self, old_vnc_vmi, vnc_vn, new_vlan):
         logger.info(
