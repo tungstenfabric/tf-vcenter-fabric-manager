@@ -70,41 +70,41 @@ def test_delete_fabric_vn(dpg_service, vnc_api_client, project):
     assert vnc_api_client.delete_vn.call_args[0] == ("dpg-uuid-1",)
 
 
-# Strings are used here as a substitute for vmware_vm fixtures
-@pytest.mark.parametrize(
-    "pg_vms,host,expected",
-    [
-        (["vm-1"], mock.Mock(vm=["vm-1"]), False),
-        (["vm-1"], mock.Mock(vm=[]), True),
-        ([], mock.Mock(vm=["vm-1"]), True),
-        ([], mock.Mock(vm=[]), True),
-    ],
-)
 def test_is_pg_empty_on_host(
-    vcenter_api_client, dpg_service, pg_vms, host, expected
+    database, dpg_service, vm_model, dpg_model, dpg_model_2
 ):
-    vcenter_api_client.get_vms_by_portgroup.return_value = pg_vms
-    result = dpg_service.is_pg_empty_on_host("dvportgroup-1", host)
+    database.add_vm_model(vm_model)
 
-    assert result is expected
+    assert dpg_service.is_pg_empty_on_host(dpg_model, "esxi-1") is False
+    assert dpg_service.is_pg_empty_on_host(dpg_model, "esxi-2") is True
+    assert dpg_service.is_pg_empty_on_host(dpg_model_2, "esxi-1") is True
 
 
-def test_filter_out_non_empty_dpgs(dpg_service, vcenter_api_client):
+@mock.patch("cvfm.database.Database.get_vm_models_by_host_name")
+@mock.patch("cvfm.database.Database.get_vm_models_by_dpg_model")
+def test_filter_out_non_empty_dpgs(
+    get_by_dpg, get_by_host, dpg_service, vcenter_api_client
+):
     vmi_model_1 = mock.Mock()
     vmi_model_2 = mock.Mock()
     vmi_model_3 = mock.Mock()
     vmware_vm_1 = mock.Mock()
     vmware_vm_2 = mock.Mock()
 
-    host = mock.Mock(vm=[vmware_vm_1, vmware_vm_2])
-    vcenter_api_client.get_vms_by_portgroup.side_effect = [
+    get_by_dpg.side_effect = [
         [vmware_vm_1],
         [vmware_vm_2],
         [],
     ]
 
+    get_by_host.side_effect = [
+        [vmware_vm_1, vmware_vm_2],
+        [vmware_vm_1, vmware_vm_2],
+        [],
+    ]
+
     result_vmi_models = dpg_service.filter_out_non_empty_dpgs(
-        [vmi_model_1, vmi_model_2, vmi_model_3], host
+        [vmi_model_1, vmi_model_2, vmi_model_3], "esxi-1"
     )
 
     assert result_vmi_models == [vmi_model_3]

@@ -137,18 +137,6 @@ def test_check_vm_moved(vm_service, database, vm_model, host):
     assert not vm_service.check_vm_moved("vm-1", host)
 
 
-def test_get_host_from_vm(
-    vm_service, database, vm_model, host, vcenter_api_client
-):
-    database.add_vm_model(vm_model)
-    vcenter_api_client.get_host.return_value = host
-
-    vm_host = vm_service.get_host_from_vm("vm-1")
-
-    assert vm_host == host
-    vcenter_api_client.get_host.assert_called_with(vm_model.host_name)
-
-
 def test_is_vm_removed(vm_service, database, vm_model, vcenter_api_client):
     database.add_vm_model(vm_model)
 
