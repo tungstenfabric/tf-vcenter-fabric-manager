@@ -162,7 +162,7 @@ class VmReconfiguredHandler(AbstractEventHandler):
             old_vm_model, new_vm_model
         )
         vmis_to_delete = self._dpg_service.filter_out_non_empty_dpgs(
-            vmis_to_delete, event.host.host
+            vmis_to_delete, event.host.host.name
         )
         self._create_vmis(new_vm_model, vmis_to_create)
         self._delete_vmis(vmis_to_delete)
@@ -206,7 +206,7 @@ class VmRemovedHandler(AbstractEventHandler):
 
         affected_vmis = self._vmi_service.create_vmi_models_for_vm(vm_model)
         vmis_to_delete = self._dpg_service.filter_out_non_empty_dpgs(
-            affected_vmis, event.host.host
+            affected_vmis, event.host.host.name
         )
         self._delete_vmis(vmis_to_delete)
 
@@ -338,7 +338,6 @@ class HostChangeHandler(AbstractChangeHandler):
             vmware_host.name,
         )
 
-        source_host = self._vm_service.get_host_from_vm(vmware_vm.name)
         old_vm_model = self._vm_service.delete_vm_model(vmware_vm.name)
         new_vm_model = self._vm_service.create_vm_model(vmware_vm)
         vmis_to_delete = set(
@@ -348,9 +347,8 @@ class HostChangeHandler(AbstractChangeHandler):
             self._vmi_service.create_vmi_models_for_vm(new_vm_model)
         )
 
-        if source_host:
-            vmis_to_delete = self._dpg_service.filter_out_non_empty_dpgs(
-                vmis_to_delete, source_host
-            )
+        vmis_to_delete = self._dpg_service.filter_out_non_empty_dpgs(
+            vmis_to_delete, old_vm_model.host_name
+        )
         self._create_vmis(new_vm_model, vmis_to_create)
         self._delete_vmis(vmis_to_delete)

@@ -45,10 +45,9 @@ class VirtualMachineService(Service):
         return vm_model
 
     def update_dpg_in_vm_models(self, dpg_model):
-        for vm_model in self._database.get_all_vm_models():
-            if vm_model.has_interface_in_dpg(dpg_model):
-                vm_model.detach_dpg(dpg_model.name)
-                vm_model.attach_dpg(dpg_model)
+        for vm_model in self._database.get_vm_models_by_dpg_model(dpg_model):
+            vm_model.detach_dpg(dpg_model.name)
+            vm_model.attach_dpg(dpg_model)
 
     def get_all_vm_models(self):
         return self._database.get_all_vm_models()
@@ -78,10 +77,6 @@ class VirtualMachineService(Service):
         if vm_model is None:
             return False
         return vm_model.host_name != host.name
-
-    def get_host_from_vm(self, vm_name):
-        vm_model = self._database.get_vm_model(vm_name)
-        return self._vcenter_api_client.get_host(vm_model.host_name)
 
     def is_vm_removed_from_vcenter(self, vm_name, host_name):
         vm_model = self._database.get_vm_model(vm_name)
