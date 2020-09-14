@@ -45,11 +45,11 @@ def test_populate_db(
     dvs_service, database, vnc_api_client, port_1, port_2, port_3, port_4
 ):
     database.clear_database()
+
+    ports = [port_1, port_2, port_3, port_4]
+
     vnc_api_client.read_all_ports.return_value = [
-        port_1,
-        port_2,
-        port_3,
-        port_4,
+        port.serialize_to_json(field_names="esxi_port_info") for port in ports
     ]
 
     dvs_service.populate_db_with_supported_dvses()

@@ -11,22 +11,35 @@ class Database(object):
         self._dpg_models = {}
         self._supported_dvses = set()
         self._physical_interfaces = collections.defaultdict(list)
+        self._host_name_to_vms = collections.defaultdict(list)
 
     def add_vm_model(self, vm_model):
         self._vm_models[vm_model.name] = vm_model
+        self._host_name_to_vms[vm_model.host_name].append(vm_model)
+
         logger.debug("Saved %s", vm_model)
 
     def get_vm_model(self, vm_name):
         return self._vm_models.get(vm_name)
 
-    def update_vm_model(self, vm_model):
-        self.add_vm_model(vm_model)
-
     def remove_vm_model(self, vm_name):
-        return self._vm_models.pop(vm_name, None)
+        vm_model = self._vm_models.pop(vm_name, None)
+        if vm_model:
+            self._host_name_to_vms[vm_model.host_name].remove(vm_model)
+        return vm_model
 
     def get_all_vm_models(self):
         return list(self._vm_models.values())
+
+    def get_vm_models_by_dpg_model(self, dpg_model):
+        return [
+            vm
+            for vm in self.get_all_vm_models()
+            if vm.has_interface_in_dpg(dpg_model)
+        ]
+
+    def get_vm_models_by_host_name(self, host_name):
+        return self._host_name_to_vms.get(host_name, [])
 
     def clear_database(self):
         self._vm_models = {}
