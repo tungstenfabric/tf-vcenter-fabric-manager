@@ -10,7 +10,7 @@ def test_update_vm_model(database, vm_model):
     assert len(database.get_vm_model("vm-1").dpg_models) == 1
 
     vm_model.dpg_models = set()
-    database.update_vm_model(vm_model)
+    database.add_vm_model(vm_model)
 
     assert database.get_vm_model("vm-1").dpg_models == set()
 
@@ -31,6 +31,27 @@ def test_get_all_vm_models(database, vm_model):
     vm_models = database.get_all_vm_models()
 
     assert list(vm_models) == [vm_model]
+
+
+def test_get_vm_models_by_dpg_model(
+    database, vm_model, vm_model_2, dpg_model, dpg_model_2
+):
+    database.add_vm_model(vm_model)
+    database.add_vm_model(vm_model_2)
+
+    assert database.get_vm_models_by_dpg_model(dpg_model) == [vm_model]
+    assert database.get_vm_models_by_dpg_model(dpg_model_2) == [vm_model_2]
+
+
+def test_get_vm_models_by_host_name(database, vm_model):
+    database.add_vm_model(vm_model)
+
+    assert database.get_vm_models_by_host_name("esxi-1") == [vm_model]
+    assert database.get_vm_models_by_host_name("esxi-2") == []
+
+    database.remove_vm_model(vm_name=vm_model.name)
+
+    assert database.get_vm_models_by_host_name("esxi-1") == []
 
 
 def test_add_dpg_model(database, dpg_model):

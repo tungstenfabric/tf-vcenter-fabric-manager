@@ -193,10 +193,7 @@ class VNCAPITestClient(object):
         ]
 
     def read_all_physical_interfaces(self):
-        return [
-            self.read_physical_interface(pi_uuid)
-            for pi_uuid in self.read_all_physical_interface_uuids()
-        ]
+        return self.vnc_lib.physical_interfaces_list(detail=True)
 
     def delete_physical_interface(self, pi_uuid):
         self.vnc_lib.physical_interface_delete(id=pi_uuid)
@@ -261,20 +258,16 @@ class VNCAPITestClient(object):
         return self.vnc_lib.virtual_port_group_read(id=vpg_uuid)
 
     def read_all_vpgs(self):
-        vpg_refs = self.vnc_lib.virtual_port_groups_list()[
-            "virtual-port-groups"
-        ]
-        vpg_list = [self.read_vpg(vpg_ref["uuid"]) for vpg_ref in vpg_refs]
+        vpg_list = self.vnc_lib.virtual_port_groups_list(detail=True)
         return {vpg.name: vpg for vpg in vpg_list}
 
     def read_vmi(self, vmi_uuid):
         return self.vnc_lib.virtual_machine_interface_read(id=vmi_uuid)
 
     def read_all_vmis(self):
-        vmi_refs = self.vnc_lib.virtual_machine_interfaces_list(
-            parent_id=self._project.get_uuid()
-        )["virtual-machine-interfaces"]
-        vmi_list = [self.read_vmi(vmi_ref["uuid"]) for vmi_ref in vmi_refs]
+        vmi_list = self.vnc_lib.virtual_machine_interfaces_list(
+            parent_id=self._project.get_uuid(), detail=True
+        )
         return {vmi.name: vmi for vmi in vmi_list}
 
     def read_vn(self, vn_uuid):

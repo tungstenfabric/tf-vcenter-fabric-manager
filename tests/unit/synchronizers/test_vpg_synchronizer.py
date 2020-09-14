@@ -50,8 +50,8 @@ def test_sync_delete(
     vpg_synchronizer, vm_service, vpg_service, vm_model, vnc_fabric
 ):
     vm_service.get_all_vm_models.return_value = [vm_model]
-    vpg_service.create_vpg_models.return_value = (
-        models.VirtualPortGroupModel.from_vm_model(vm_model)
+    vpg_service.create_vpg_models.return_value = models.VirtualPortGroupModel.from_vm_model(
+        vm_model
     )
     vpg_1_uuid = (
         models.VirtualPortGroupModel.from_vm_model(vm_model)[0]
