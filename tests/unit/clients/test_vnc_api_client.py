@@ -142,10 +142,7 @@ def test_read_all_vpgs(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_port_groups_list.return_value = {
-        "virtual-port-groups": [
-            vcenter_object,
-            non_vcenter_object,
-        ]
+        "virtual-port-groups": [vcenter_object, non_vcenter_object,]
     }
 
     vpgs = vnc_api_client.read_all_vpgs()
@@ -157,10 +154,7 @@ def test_read_all_vns(
     vnc_api_client, vnc_lib, vcenter_object, non_vcenter_object
 ):
     vnc_lib.virtual_networks_list.return_value = {
-        "virtual-networks": [
-            vcenter_object,
-            non_vcenter_object,
-        ]
+        "virtual-networks": [vcenter_object, non_vcenter_object,]
     }
 
     vns = vnc_api_client.read_all_vns()
@@ -181,32 +175,6 @@ def test_has_proper_creator():
     assert clients.has_proper_creator(other_creator) is False
     assert clients.has_proper_creator(no_creator) is False
     assert clients.has_proper_creator(no_id_perms) is False
-
-
-def test_read_nodes_by_host_names(vnc_api_client, vnc_lib):
-    node_1 = vnc_api.Node(name="esxi-1")
-    node_2 = vnc_api.Node(name="esxi-2")
-    node_3 = vnc_api.Node(name="esxi-3")
-    vnc_lib.nodes_list.return_value = {
-        "nodes": [
-            {"uuid": "node-1-uuid"},
-            {"uuid": "node-2-uuid"},
-            {"uuid": "node-3-uuid"},
-            {"uuid": "node-4-uuid"},
-        ]
-    }
-    vnc_lib.node_read.side_effect = [
-        node_1,
-        node_2,
-        node_3,
-        vnc_api.NoIdError("node-4-uuid"),
-    ]
-
-    result = vnc_api_client.get_nodes_by_host_names(["esxi-1", "esxi-2"])
-
-    assert len(result) == 2
-    assert node_1 in result
-    assert node_2 in result
 
 
 def test_connection_lost(vnc_api_client, vnc_lib):
@@ -375,22 +343,6 @@ def test_update_vpg(vnc_api_client, vnc_lib, vpg_1):
     vnc_api_client.update_vpg(vpg_1)
 
     vnc_lib.virtual_port_group_update.assert_called_once_with(vpg_1)
-
-
-def test_read_all_prs(vnc_api_client, vnc_lib):
-    pr = mock.Mock()
-    pr_refs = {
-        "physical-routers": [{"uuid": "pr-1-uuid"}, {"uuid": "pr-2-uuid"}]
-    }
-    vnc_lib.physical_routers_list.return_value = pr_refs
-    vnc_lib.physical_router_read.side_effect = [
-        pr,
-        vnc_api.NoIdError("pr-2-uuid"),
-    ]
-
-    prs = vnc_api_client.read_all_physical_routers()
-
-    assert prs == [pr]
 
 
 def test_read_pi(vnc_api_client, vnc_lib):

@@ -95,31 +95,37 @@ class DistributedPortGroupService(Service):
     def delete_fabric_vn(self, dpg_uuid):
         self._vnc_api_client.delete_vn(dpg_uuid)
 
-    def filter_out_non_empty_dpgs(self, vmi_models, host):
+    def filter_out_non_empty_dpgs(self, vmi_models, host_name):
         return [
             vmi_model
             for vmi_model in vmi_models
-            if self.is_pg_empty_on_host(vmi_model.dpg_model.key, host)
+            if self.is_pg_empty_on_host(vmi_model.dpg_model, host_name)
         ]
 
-    def is_pg_empty_on_host(self, portgroup_key, host):
-        vms_in_pg = set(
-            self._vcenter_api_client.get_vms_by_portgroup(portgroup_key)
+    def is_pg_empty_on_host(self, dpg_model, host_name):
+        vm_models_by_dpg = set(
+            self._database.get_vm_models_by_dpg_model(dpg_model)
         )
-        vms_on_host = set(host.vm)
-        vms_in_pg_and_on_host = vms_in_pg.intersection(vms_on_host)
+        vm_models_by_host = set(
+            self._database.get_vm_models_by_host_name(host_name)
+        )
+
+        vms_in_pg_and_on_host = vm_models_by_dpg.intersection(
+            vm_models_by_host
+        )
+
         is_empty = vms_in_pg_and_on_host == set()
         if is_empty:
             logger.info(
                 "DPG with key %s is empty on host: %s",
-                portgroup_key,
-                host.name,
+                dpg_model.key,
+                host_name,
             )
         else:
             logger.info(
                 "DPG with key %s is not empty on host: %s",
-                portgroup_key,
-                host.name,
+                dpg_model.key,
+                host_name,
             )
         return is_empty
 
@@ -132,7 +138,7 @@ class DistributedPortGroupService(Service):
         dvs_name = vmware_dpg.config.distributedVirtualSwitch.name
         if not self._database.is_dvs_supported(dvs_name):
             raise exceptions.DPGCreationError(
-                "DVS {} is not " "supported.".format(dvs_name)
+                "DVS {} is not supported.".format(dvs_name)
             )
 
     @staticmethod

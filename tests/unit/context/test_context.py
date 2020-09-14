@@ -139,12 +139,12 @@ def synchronizers_lib(synchronizers, cvfm_synchronizer):
         s_mock.VirtualPortGroupSynchronizer.return_value = synchronizers[
             "vpg_synchronizer"
         ]
-        s_mock.VirtualMachineInterfaceSynchronizer.return_value = (
-            synchronizers["vmi_synchronizer"]
-        )
-        s_mock.DistributedVirtualSwitchSynchronizer.return_value = (
-            synchronizers["dvs_synchronizer"]
-        )
+        s_mock.VirtualMachineInterfaceSynchronizer.return_value = synchronizers[
+            "vmi_synchronizer"
+        ]
+        s_mock.DistributedVirtualSwitchSynchronizer.return_value = synchronizers[
+            "dvs_synchronizer"
+        ]
         s_mock.PhysicalInterfaceSynchronizer.return_value = synchronizers[
             "pi_synchronizer"
         ]
