@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02a60649_2839e5f2",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "why do we need list all physical_routers in detailed?\n\nI see that this method is used only here https://github.com/tungstenfabric/tf-vcenter-fabric-manager/blob/791327d8b51236a6c8815f3b719418ac03f398f6/cvfm/services/pi.py#L42\n\nWhere we are looking for fabric_refs fields only. So why can we modify the  read_all_physical_routers method as below,\n\n    def read_all_physical_routers(self, fields\u003dNone):\n        if fields:\n            return self.vnc_lib.physical_routers_list(fields\u003dfields)\n        else:\n            return self.vnc_lib.physical_routers_list(detail\u003dTrue)",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4c99537_5a37b79c",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "Please check detail\u003dTrue really required, if not use fields query",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05f2bbce_27af86e2",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "Please check detail\u003dTrue really required, if not use fields query",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b90c3b3_a436a80a",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "Please check detail\u003dTrue really required, if not use fields query",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0a2b9ea_8233e66d",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "Please check detail\u003dTrue really required, if not use fields query",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "972f586b_88f64a3f",
+        "filename": "cvfm/clients/vnc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2020-09-22T20:58:34Z",
+      "side": 1,
+      "message": "Please check detail\u003dTrue really required, if not use fields query",
+      "revId": "06edf072edfa59827868ddb665bc8b95e8f55c24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
