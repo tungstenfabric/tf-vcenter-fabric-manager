@@ -168,7 +168,7 @@ class VNCAPIClient(object):
         return self.vnc_lib.nodes_list(fields=fields, filters=filters)["nodes"]
 
     def get_node_ports(self, node, fields=None):
-        port_uuids = [port_ref["uuid"] for port_ref in node.get("ports")]
+        port_uuids = [port_ref["uuid"] for port_ref in node.get("ports", ())]
         return self.vnc_lib.ports_list(fields=fields, obj_uuids=port_uuids)[
             "ports"
         ]
