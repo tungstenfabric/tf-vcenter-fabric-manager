@@ -1,5 +1,3 @@
-import json
-
 from builtins import zip
 import mock
 
@@ -159,29 +157,11 @@ def not_deleted_from_vnc(previous, current):
 
 
 def verify_vmi_bindings(vmi, vpg):
-    pi_info = [
-        (pi_ref["to"][2], pi_ref["to"][1])
-        for pi_ref in vpg.get_physical_interface_refs()
-    ]
-    expected_profile = {
-        "local_link_information": [
-            {
-                "port_id": port_id,
-                "switch_id": port_id,
-                "fabric": vpg.fq_name[1],
-                "switch_info": switch_name,
-            }
-            for port_id, switch_name in pi_info
-        ]
-    }
-
     expected_bindings = vnc_api.KeyValuePairs(
         [
             vnc_api.KeyValuePair(key="vpg", value=vpg.name),
             vnc_api.KeyValuePair(key="vnic_type", value="baremetal"),
-            vnc_api.KeyValuePair(
-                key="profile", value=json.dumps(expected_profile)
-            ),
+            vnc_api.KeyValuePair(key="profile", value="{}"),
         ]
     )
 

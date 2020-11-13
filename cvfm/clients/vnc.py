@@ -1,5 +1,3 @@
-import json
-
 from builtins import object
 import logging
 
@@ -234,28 +232,11 @@ class VNCAPIClient(object):
             self.delete_vpg(vpg.uuid)
 
     def create_vmi_bindings(self, vnc_vmi, vnc_vpg):
-        pi_info = [
-            (pi_ref["to"][2], pi_ref["to"][1])
-            for pi_ref in vnc_vpg.get_physical_interface_refs() or ()
-        ]
-
-        profile = {
-            "local_link_information": [
-                {
-                    "port_id": port_id,
-                    "switch_id": port_id,
-                    "fabric": vnc_vpg.fq_name[1],
-                    "switch_info": switch_name,
-                }
-                for port_id, switch_name in pi_info
-            ]
-        }
-
         kv_pairs = vnc_api.KeyValuePairs(
             [
                 vnc_api.KeyValuePair(key="vpg", value=vnc_vpg.name),
                 vnc_api.KeyValuePair(key="vnic_type", value="baremetal"),
-                vnc_api.KeyValuePair(key="profile", value=json.dumps(profile)),
+                vnc_api.KeyValuePair(key="profile", value="{}"),
             ]
         )
 
