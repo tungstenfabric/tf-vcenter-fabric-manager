@@ -183,6 +183,10 @@ class CVFMContext(object):
             "vcenter-fabric-manager",
             self.config["zookeeper_config"]["zookeeper_servers"],
             self.config["defaults_config"]["host_ip"],
+            self.config["defaults_config"]["zookeeper_ssl_enable"],
+            self.config["defaults_config"]["zookeeper_ssl_keyfile"],
+            self.config["defaults_config"]["zookeeper_ssl_certificate"],
+            self.config["defaults_config"]["zookeeper_ssl_ca_cert"],
         )
         zookeeper_client.set_lost_cb(zookeeper_connection_lost)
         return zookeeper_client
