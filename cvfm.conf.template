@@ -34,6 +34,10 @@ vc_datacenter=
 
 [ZOOKEEPER]
 zookeeper_servers=
+zookeeper_ssl_enable=
+zookeeper_ssl_keyfile=
+zookeeper_ssl_certificate=
+zookeeper_ssl_ca_cert=
 
 [RABBIT]
 rabbit_hosts=
