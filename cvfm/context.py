@@ -179,10 +179,21 @@ class CVFMContext(object):
         logger.info("Connecting to zookeeper...")
         # Below, we use a different module name than for SandeshLogger,
         # since we want to keep zk logs in a separate log file
-        zookeeper_client = zkclient.ZookeeperClient(
-            "vcenter-fabric-manager",
-            self.config["zookeeper_config"]["zookeeper_servers"],
-            self.config["defaults_config"]["host_ip"],
-        )
+        if self.config["zookeeper_config"]["zookeeper_ssl_enable"]:
+            zookeeper_client = zkclient.ZookeeperClient(
+                "vcenter-fabric-manager",
+                self.config["zookeeper_config"]["zookeeper_servers"],
+                self.config["defaults_config"]["host_ip"], None, 400,
+                self.config["zookeeper_config"]["zookeeper_ssl_enable"],
+                self.config["zookeeper_config"]["zookeeper_ssl_keyfile"],
+                self.config["zookeeper_config"]["zookeeper_ssl_certificate"],
+                self.config["zookeeper_config"]["zookeeper_ssl_ca_cert"],
+            )
+        else:
+            zookeeper_client = zkclient.ZookeeperClient(
+                "vcenter-fabric-manager",
+                self.config["zookeeper_config"]["zookeeper_servers"],
+                self.config["defaults_config"]["host_ip"],
+            )
         zookeeper_client.set_lost_cb(zookeeper_connection_lost)
         return zookeeper_client

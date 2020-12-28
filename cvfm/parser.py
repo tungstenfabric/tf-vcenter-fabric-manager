@@ -137,7 +137,10 @@ class CVFMArgumentParser(object):
         self.config["vcenter_config"] = vcenter_config
 
     def _read_zookeeper_config(self):
-        zookeeper_config = self._read_config("ZOOKEEPER")
+        zookeeper_config = self._read_config(
+            section_name="ZOOKEEPER",
+            booleans=["zookeeper_ssl_enable"],
+        )
         self.config["zookeeper_config"] = zookeeper_config
 
     def _read_rabbit_config(self):
