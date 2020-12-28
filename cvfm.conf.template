@@ -25,12 +25,12 @@ api_certfile=
 api_cafile=
 
 [VCENTER]
-vc_host=
-vc_port=
-vc_username=
-vc_password=
+vc_host= 10.220.128.4
+vc_port= 443
+vc_username= vsphere.local\shrivanithar
+vc_password= Embe1mpls!
 vc_preferred_api_versions=
-vc_datacenter=
+vc_datacenter= VDS
 
 [ZOOKEEPER]
 zookeeper_servers=
